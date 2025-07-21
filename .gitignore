@@ -1,0 +1,33 @@
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# VS Code settings
+.vscode/
+
+# Output files
+*.csv
+/auraOutputs/
+*.log
+
+# PCAP files (if not versioned)
+*.pcap
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+env/
+*.env
+*.pcap*
+# Temporary files
+*.tmp
+*.pcap
+*.bak
