@@ -1,0 +1,135 @@
+{% load custom_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SMPP Chain Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 320px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button, input[type="submit"] {
+            padding: 10px 18px;
+            font-size: 16px;
+            margin-left: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+        }
+        button:hover, input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background-color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px 14px;
+            text-align: left;
+            font-size: 14px;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .no-results {
+            margin-top: 30px;
+            font-size: 16px;
+            color: #888;
+        }
+        .message-box {
+            margin-bottom: 20px;
+            padding: 12px;
+            border-radius: 4px;
+        }
+        .message-box.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .message-box.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>SMPP Chain Search</h1>
+
+    <!-- Django messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message-box {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Generate CSV -->
+    <form method="post" action="{% url 'generate_csv' %}">
+        {% csrf_token %}
+        <input type="text" name="dir_input" placeholder="Optional: Enter directory for input PCAPs">
+        <button type="submit">Generate CSV</button>
+    </form>
+
+    <!-- Search -->
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="query" placeholder="Enter one or more message_id(s), comma-separated" required>
+        <input type="submit" value="Search">
+    </form>
+
+    <!-- Search Results -->
+    {% if results %}
+        <table>
+            <thead>
+                <tr>
+                    {% for col in header %}
+                        <th>{{ col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in results %}
+                    <tr>
+                        {% for col in header %}
+                            <td>{{ row|getattr:col }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% elif query %}
+        <div class="no-results">No results found for message_id: <strong>{{ query }}</strong></div>
+    {% endif %}
+</body>
+</html>
